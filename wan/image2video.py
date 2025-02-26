@@ -63,7 +63,14 @@ class WanI2V:
             init_on_cpu (`bool`, *optional*, defaults to True):
                 Enable initializing Transformer Model on CPU. Only works without FSDP or USP.
         """
-        self.device = torch.device(f"cuda:{device_id}")
+        # Check if device_id is a torch.device instance
+        if isinstance(device_id, torch.device):
+            self.device = device_id
+        elif device_id == "mps" or (isinstance(device_id, int) and device_id == -1):
+            self.device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
+        else:
+            self.device = torch.device(f"cuda:{device_id}")
+            
         self.config = config
         self.rank = rank
         self.use_usp = use_usp
