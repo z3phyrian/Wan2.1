@@ -1,93 +1,68 @@
-# Wan2.1 Text-to-Video Model
+# Wan2.1
 
-This repository contains the Wan2.1 text-to-video model, adapted for macOS with M1 Pro chip. This adaptation allows macOS users to run the model efficiently, overcoming CUDA-specific limitations.
+<p align="center">
+    <img src="assets/logo.png" width="400"/>
+<p>
 
-## Introduction
+<p align="center">
+    💜 <a href=""><b>Wan</b></a> &nbsp&nbsp ｜ &nbsp&nbsp 🖥️ <a href="https://github.com/Wan-Video/Wan2.1">GitHub</a> &nbsp&nbsp  | &nbsp&nbsp🤗 <a href="https://huggingface.co/Wan-AI/">Hugging Face</a>&nbsp&nbsp | &nbsp&nbsp🤖 <a href="https://modelscope.cn/organization/Wan-AI">ModelScope</a>&nbsp&nbsp | &nbsp&nbsp 📑 <a href="">Paper (Coming soon)</a> &nbsp&nbsp | &nbsp&nbsp 📑 <a href="https://wanxai.com">Blog</a> &nbsp&nbsp | &nbsp&nbsp💬 <a href="https://gw.alicdn.com/imgextra/i2/O1CN01tqjWFi1ByuyehkTSB_!!6000000000015-0-tps-611-1279.jpg">WeChat Group</a>&nbsp&nbsp | &nbsp&nbsp 📖 <a href="https://discord.gg/p5XbdQV7">Discord</a>&nbsp&nbsp
+<br>
 
-The Wan2.1 model is an open-source text-to-video generation model. It transforms textual descriptions into video sequences, leveraging advanced machine learning techniques.
+-----
 
-## Changes for macOS
+[**Wan: Open and Advanced Large-Scale Video Generative Models**]("") <be>
 
-This version includes modifications to make the model compatible with macOS, specifically for systems using the M1 Pro chip. Key changes include:
+In this repository, we present **Wan2.1**, a comprehensive and open suite of video foundation models that pushes the boundaries of video generation. **Wan2.1** offers these key features:
+- 👍 **SOTA Performance**: **Wan2.1** consistently outperforms existing open-source models and state-of-the-art commercial solutions across multiple benchmarks.
+- 👍 **Supports Consumer-grade GPUs**: The T2V-1.3B model requires only 8.19 GB VRAM, making it compatible with almost all consumer-grade GPUs. It can generate a 5-second 480P video on an RTX 4090 in about 4 minutes (without optimization techniques like quantization). Its performance is even comparable to some closed-source models.
+- 👍 **Multiple Tasks**: **Wan2.1** excels in Text-to-Video, Image-to-Video, Video Editing, Text-to-Image, and Video-to-Audio, advancing the field of video generation.
+- 👍 **Visual Text Generation**: **Wan2.1** is the first video model capable of generating both Chinese and English text, featuring robust text generation that enhances its practical applications.
+- 👍 **Powerful Video VAE**: **Wan-VAE** delivers exceptional efficiency and performance, encoding and decoding 1080P videos of any length while preserving temporal information, making it an ideal foundation for video and image generation.
 
-- Adaptation of CUDA-specific code to work with MPS (Metal Performance Shaders) on macOS.
-- Environment variable settings for MPS fallback to CPU for unsupported operations.
-- Adjustments to command-line arguments for better compatibility with macOS.
+## Video Demos
 
-## Installation Instructions
 <div align="center">
   <video src="https://github.com/user-attachments/assets/4aca6063-60bf-4953-bfb7-e265053f49ef" width="70%" poster=""> </video>
 </div>
 
-Follow these steps to set up the environment on macOS:
+## 🔥 Latest News!!
 
-1. **Install Homebrew**: If not already installed, use Homebrew to manage packages.
-   ```bash
-   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-   ```
 * Feb 25, 2025: 👋 We've released the inference code and weights of Wan2.1.
-* Feb 27, 2025: 👋 Wan2.1 has been integrated into [ComfyUI](https://comfyanonymous.github.io/ComfyUI_examples/wan/). Enjoy!
 
-2. **Install Python 3.10+**:
-   ```bash
-   brew install python@3.10
-   ```
 
-3. **Create and Activate a Virtual Environment**:
-   ```bash
-   python3.10 -m venv venv_wan
-   source venv_wan/bin/activate
-   ```
 ## 📑 Todo List
 - Wan2.1 Text-to-Video
     - [x] Multi-GPU Inference code of the 14B and 1.3B models
     - [x] Checkpoints of the 14B and 1.3B models
     - [x] Gradio demo
-    - [x] ComfyUI integration
     - [ ] Diffusers integration
+    - [ ] ComfyUI integration
 - Wan2.1 Image-to-Video
     - [x] Multi-GPU Inference code of the 14B model
     - [x] Checkpoints of the 14B model
     - [x] Gradio demo
-    - [X] ComfyUI integration
     - [ ] Diffusers integration
-    
+    - [ ] ComfyUI integration
 
-4. **Install Dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   pip install einops
-   ```
 
-5. **Download models using huggingface-cli**:
-   ```bash
-   pip install "huggingface_hub[cli]"
-   huggingface-cli download Wan-AI/Wan2.1-T2V-1.3B --local-dir ./Wan2.1-T2V-1.3B
-   ```
-   **Or download models using huggingface-cli**:
-   ```bash
-   pip install modelscope
-   modelscope download Wan-AI/Wan2.1-T2V-1.3B --local_dir ./Wan2.1-T2V-1.3B
-   ```
+## Quickstart
 
-## Usage
-
-To generate a video, use the following command:
-
-```bash
-export PYTORCH_ENABLE_MPS_FALLBACK=1
-python generate.py --task t2v-1.3B --size "480*832" --frame_num 16 --sample_steps 25 --ckpt_dir ./Wan2.1-T2V-1.3B --offload_model True --t5_cpu --device mps --prompt "Lion running under snow in Samarkand" --save_file output_video.mp4
+#### Installation
+Clone the repo:
+```
+git clone https://github.com/Wan-Video/Wan2.1.git
+cd Wan2.1
 ```
 
-## Optimization Tips
+Install dependencies:
+```
+# Ensure torch >= 2.4.0
+pip install -r requirements.txt
+```
 
-- **Use CPU for Large Models**: If you encounter memory issues, use `--device cpu`.
-- **Reduce Resolution and Frame Count**: Use smaller resolutions and fewer frames to reduce memory usage.
-- **Monitor System Resources**: Keep an eye on memory usage and adjust parameters as needed.
 
-## Acknowledgments
+#### Model Download
 
-This project is based on the original Wan2.1 model. Special thanks to the original authors and contributors for their work.
 | Models        |                       Download Link                                           |    Notes                      |
 | --------------|-------------------------------------------------------------------------------|-------------------------------|
 | T2V-14B       |      🤗 [Huggingface](https://huggingface.co/Wan-AI/Wan2.1-T2V-14B)      🤖 [ModelScope](https://www.modelscope.cn/models/Wan-AI/Wan2.1-T2V-14B)          | Supports both 480P and 720P
@@ -354,7 +329,7 @@ We test the computational efficiency of different **Wan2.1** models on different
 
 
 ## Community Contributions
-- [DiffSynth-Studio](https://github.com/modelscope/DiffSynth-Studio) provides more support for **Wan2.1**, including video-to-video, FP8 quantization, VRAM optimization, LoRA training, and more. Please refer to [their examples](https://github.com/modelscope/DiffSynth-Studio/tree/main/examples/wanvideo).
+- [DiffSynth-Studio](https://github.com/modelscope/DiffSynth-Studio) provides more support for Wan, including video-to-video, FP8 quantization, VRAM optimization, LoRA training, and more. Please refer to [their examples](https://github.com/modelscope/DiffSynth-Studio/tree/main/examples/wanvideo).
 
 -------
 
