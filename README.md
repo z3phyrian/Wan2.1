@@ -15,9 +15,6 @@ This version includes modifications to make the model compatible with macOS, spe
 - Adjustments to command-line arguments for better compatibility with macOS.
 
 ## Installation Instructions
-<div align="center">
-  <video src="https://github.com/user-attachments/assets/4aca6063-60bf-4953-bfb7-e265053f49ef" width="70%" poster=""> </video>
-</div>
 
 Follow these steps to set up the environment on macOS:
 
@@ -25,9 +22,7 @@ Follow these steps to set up the environment on macOS:
    ```bash
    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
    ```
-* Feb 25, 2025: 👋 We've released the inference code and weights of Wan2.1.
-* Feb 27, 2025: 👋 Wan2.1 has been integrated into [ComfyUI](https://comfyanonymous.github.io/ComfyUI_examples/wan/). Enjoy!
-
+   
 2. **Install Python 3.10+**:
    ```bash
    brew install python@3.10
@@ -38,21 +33,7 @@ Follow these steps to set up the environment on macOS:
    python3.10 -m venv venv_wan
    source venv_wan/bin/activate
    ```
-## 📑 Todo List
-- Wan2.1 Text-to-Video
-    - [x] Multi-GPU Inference code of the 14B and 1.3B models
-    - [x] Checkpoints of the 14B and 1.3B models
-    - [x] Gradio demo
-    - [x] ComfyUI integration
-    - [ ] Diffusers integration
-- Wan2.1 Image-to-Video
-    - [x] Multi-GPU Inference code of the 14B model
-    - [x] Checkpoints of the 14B model
-    - [x] Gradio demo
-    - [X] ComfyUI integration
-    - [ ] Diffusers integration
     
-
 4. **Install Dependencies**:
    ```bash
    pip install -r requirements.txt
@@ -88,6 +69,29 @@ python generate.py --task t2v-1.3B --size "480*832" --frame_num 16 --sample_step
 ## Acknowledgments
 
 This project is based on the original Wan2.1 model. Special thanks to the original authors and contributors for their work.
+
+
+* Feb 25, 2025: 👋 We've released the inference code and weights of Wan2.1.
+* Feb 27, 2025: 👋 Wan2.1 has been integrated into [ComfyUI](https://comfyanonymous.github.io/ComfyUI_examples/wan/). Enjoy!
+
+<div align="center">
+  <video src="https://github.com/user-attachments/assets/4aca6063-60bf-4953-bfb7-e265053f49ef" width="70%" poster=""> </video>
+</div>
+
+
+## 📑 Todo List
+- Wan2.1 Text-to-Video
+    - [x] Multi-GPU Inference code of the 14B and 1.3B models
+    - [x] Checkpoints of the 14B and 1.3B models
+    - [x] Gradio demo
+    - [x] ComfyUI integration
+    - [ ] Diffusers integration
+- Wan2.1 Image-to-Video
+    - [x] Multi-GPU Inference code of the 14B model
+    - [x] Checkpoints of the 14B model
+    - [x] Gradio demo
+    - [X] ComfyUI integration
+    - [ ] Diffusers integration
 | Models        |                       Download Link                                           |    Notes                      |
 | --------------|-------------------------------------------------------------------------------|-------------------------------|
 | T2V-14B       |      🤗 [Huggingface](https://huggingface.co/Wan-AI/Wan2.1-T2V-14B)      🤖 [ModelScope](https://www.modelscope.cn/models/Wan-AI/Wan2.1-T2V-14B)          | Supports both 480P and 720P
@@ -173,11 +177,13 @@ torchrun --nproc_per_node=8 generate.py --task t2v-14B --size 1280*720 --ckpt_di
 
 Extending the prompts can effectively enrich the details in the generated videos, further enhancing the video quality. Therefore, we recommend enabling prompt extension. We provide the following two methods for prompt extension:
 
-- Use the Dashscope API for extension.
-  - Apply for a `dashscope.api_key` in advance ([EN](https://www.alibabacloud.com/help/en/model-studio/getting-started/first-api-call-to-qwen) | [CN](https://help.aliyun.com/zh/model-studio/getting-started/first-api-call-to-qwen)).
-  - Configure the environment variable `DASH_API_KEY` to specify the Dashscope API key. For users of Alibaba Cloud's international site, you also need to set the environment variable `DASH_API_URL` to 'https://dashscope-intl.aliyuncs.com/api/v1'. For more detailed instructions, please refer to the [dashscope document](https://www.alibabacloud.com/help/en/model-studio/developer-reference/use-qwen-by-calling-api?spm=a2c63.p38356.0.i1).
-  - Use the `qwen-plus` model for text-to-video tasks and `qwen-vl-max` for image-to-video tasks.
-  - You can modify the model used for extension with the parameter `--prompt_extend_model`. For example:
+## Usage
+
+To generate a video, use the following command:
+
+```bash
+export PYTORCH_ENABLE_MPS_FALLBACK=1
+python generate.py --task t2v-1.3B --size "480*832" --frame_num 16 --sample_steps 25 --ckpt_dir ./Wan2.1-T2V-1.3B --offload_model True --t5_cpu --device mps --prompt "Lion running under snow in Samarkand" --save_file output_video.mp4
 ```
 DASH_API_KEY=your_key python generate.py  --task t2v-14B --size 1280*720 --ckpt_dir ./Wan2.1-T2V-14B --prompt "Two anthropomorphic cats in comfy boxing gear and bright gloves fight intensely on a spotlighted stage" --use_prompt_extend --prompt_extend_method 'dashscope' --prompt_extend_target_lang 'ch'
 ```
@@ -419,9 +425,13 @@ The models in this repository are licensed under the Apache 2.0 License. We clai
 
 ## Acknowledgements
 
-We would like to thank the contributors to the [SD3](https://huggingface.co/stabilityai/stable-diffusion-3-medium), [Qwen](https://huggingface.co/Qwen), [umt5-xxl](https://huggingface.co/google/umt5-xxl), [diffusers](https://github.com/huggingface/diffusers) and [HuggingFace](https://huggingface.co) repositories, for their open research.
 
+## Optimization Tips
 
+- **Use CPU for Large Models**: If you encounter memory issues, use `--device cpu`.
+- **Reduce Resolution and Frame Count**: Use smaller resolutions and fewer frames to reduce memory usage.
+- **Monitor System Resources**: Keep an eye on memory usage and adjust parameters as needed.
 
-## Contact Us
-If you would like to leave a message to our research or product teams, feel free to join our [Discord](https://discord.gg/p5XbdQV7) or [WeChat groups](https://gw.alicdn.com/imgextra/i2/O1CN01tqjWFi1ByuyehkTSB_!!6000000000015-0-tps-611-1279.jpg)!
+## Acknowledgments
+
+This project is based on the original Wan2.1 model. Special thanks to the original authors and contributors for their work.
