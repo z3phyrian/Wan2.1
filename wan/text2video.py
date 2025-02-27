@@ -85,16 +85,20 @@ class WanT2V:
         self.model.eval().requires_grad_(False)
 
         if use_usp:
-            from xfuser.core.distributed import \
-                get_sequence_parallel_world_size
-
-            from .distributed.xdit_context_parallel import (usp_attn_forward,
-                                                            usp_dit_forward)
-            for block in self.model.blocks:
-                block.self_attn.forward = types.MethodType(
-                    usp_attn_forward, block.self_attn)
-            self.model.forward = types.MethodType(usp_dit_forward, self.model)
-            self.sp_size = get_sequence_parallel_world_size()
+            try:
+                from xfuser.core.distributed import get_sequence_parallel_world_size
+                from .distributed.xdit_context_parallel import (usp_attn_forward,
+                                                                usp_dit_forward)
+                for block in self.model.blocks:
+                    block.self_attn.forward = types.MethodType(
+                        usp_attn_forward, block.self_attn)
+                self.model.forward = types.MethodType(usp_dit_forward, self.model)
+                self.sp_size = get_sequence_parallel_world_size()
+            except ImportError:
+                # Fall back to non-USP mode on systems without xfuser
+                logging.warning("xfuser package not found, disabling USP mode")
+                self.sp_size = 1
+                use_usp = False
         else:
             self.sp_size = 1
 
