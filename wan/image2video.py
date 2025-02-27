@@ -244,7 +244,7 @@ class WanI2V:
         y = self.vae.encode([
             torch.concat([
                 torch.nn.functional.interpolate(
-                    img[None].cpu(), size=(h, w), mode='bicubic').transpose(
+                    img[None], size=(h, w), mode='bicubic').transpose(
                         0, 1),
                 torch.zeros(3, 80, h, w)
             ],
